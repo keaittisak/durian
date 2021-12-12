@@ -1,0 +1,59 @@
+# BasicGUI.py
+from datetime import datetime
+from tkinter import *
+from tkinter import ttk, messagebox
+
+
+def writetext(quantity, total):
+    stamp = datetime.now()
+    stamp = stamp.replace(year=stamp.year+543)  # เเปลง ค.ศ. ให้เป็น พ.ศ.
+    stamp = stamp.strftime('%Y-%m-%d  %H::%M::%S')
+
+    filename = 'data.txt'  # บันทึกข้อมูลลงใน txt
+    # ถ้าจะให้แสดงภาษาไทยให้ใส่ encoding ='utf-8'
+    with open(filename, "a", encoding='utf-8') as file:
+        file.write(
+            '\n'+'วัน,เวลา : {} ทุเรียน: {} กก. รวมยอดทั้งหมด {:,.2f} บาท'.format(stamp, quantity, total))
+
+
+def writecsv(data):
+    with open('data.csv', 'a', newline='', encoding='utf-8') as file:
+        fw = csv.writer(file)
+        fw.writerow(data)
+    print('Success')
+
+
+GUI = Tk()
+GUI.geometry('600x700')
+GUI.title('โปรแกรมของลุง')
+
+file = PhotoImage(file='du.png')
+IMG = Label(GUI, image=file, text='')
+IMG.pack()
+
+L1 = Label(GUI, text='โปรแกรมคำนวณทุเรียน', font=(
+    'Angsana New', 30, 'bold'), fg='green')
+L1.pack()  # .place(x,y) , .grid(row=0,column=0)
+
+L2 = Label(GUI, text='กรุณากรอกจำนวนทุเรียน', font=('Angsana New', 20))
+L2.pack()
+
+v_quantity = StringVar()  # ตำแหน่งตัวแปรที่ใช้เก็บข้อมูลของช่องกรอก
+
+E1 = ttk.Entry(GUI, textvariable=v_quantity, font=('impact', 30))
+E1.pack()
+
+
+def Calculate():
+    quantity = v_quantity.get()
+    price = 100
+    print('จำนวน', float(quantity) * price)
+    cal = float(quantity) * price
+    writetext(quantity, cal)
+
+
+B1 = ttk.Button(GUI, text='คำนวณ', command=Calculate)
+B1.pack(ipadx=30, ipady=20, pady=20)
+
+
+GUI.mainloop()
